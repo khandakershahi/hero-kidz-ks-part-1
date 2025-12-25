@@ -1,13 +1,23 @@
 "use client";
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-
-import React from 'react';
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 const NavLink = ({ href, children }) => {
-    const path = usePathname();
+    const pathname = usePathname();
+
+    const isActive =
+        href === "/"
+            ? pathname === "/"
+            : pathname.startsWith(href);
+
     return (
-        <Link className={`${path.startsWith(href) && "text-primary"} font-medium`} href={href}>{children}</Link>
+        <Link
+            href={href}
+            className={`font-medium ${isActive ? "text-primary" : ""
+                }`}
+        >
+            {children}
+        </Link>
     );
 };
 
