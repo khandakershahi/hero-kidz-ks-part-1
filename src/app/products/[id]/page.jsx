@@ -1,6 +1,59 @@
 import { getSingleProduct } from "@/actions/server/products";
+import CartButton from "@/components/buttons/CartButton";
 import Image from "next/image";
 import { FaStar } from "react-icons/fa";
+
+
+export async function generateMetadata({ params }) {
+    const { id } = await params;
+    const product = await getSingleProduct(id);
+
+    if (!product) {
+        return {
+            title: "Product Not Found | Hero Kidz",
+            description: "The requested product could not be found.",
+        };
+    }
+
+    return {
+        title: product.title,
+        description: product.description?.slice(0, 160),
+
+        openGraph: {
+            type: "website", // ✅ FIXED
+            title: product.title,
+            description: product.description?.slice(0, 160),
+            url: `https://herokidz.com/products/${product._id}`,
+            images: [
+                {
+                    url:
+                        product.image ||
+                        "https://i.ibb.co.com/yFkcp6dZ/2025-12-26-17-46.png",
+                    width: 1200,
+                    height: 630,
+                    alt: product.title,
+                },
+            ],
+        },
+
+        twitter: {
+            card: "summary_large_image",
+            title: product.title,
+            description: product.description?.slice(0, 160),
+            images: [
+                product.image ||
+                "https://i.ibb.co.com/yFkcp6dZ/2025-12-26-17-46.png",
+            ],
+        },
+
+        alternates: {
+            canonical: `https://herokidz.com/products/${product._id}`,
+        },
+    };
+}
+
+
+
 
 export default async function ProductDetails({ params }) {
     // params is a Promise now
@@ -74,10 +127,8 @@ export default async function ProductDetails({ params }) {
                         </>
                     )}
                 </div>
-
-                <button className="btn btn-primary w-full mt-4">
-                    Add to Cart
-                </button>
+                {/* action */}
+                <CartButton product={product}></CartButton>
             </div>
 
             {/* Description */}

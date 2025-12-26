@@ -17,6 +17,7 @@ const client = new MongoClient(uri, {
 
 export const collections = {
     PRODUCTS: "products",
+    USERS: "users",
 };
 
 export const dbConnect = (collectionName) => {

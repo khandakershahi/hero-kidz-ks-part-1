@@ -1,23 +1,19 @@
-import React from 'react';
-import products from '@/data/toys.json';
-import ProductCard from '../cards/ProductCards';
-import { getProducts } from '@/actions/server/products';
+import ProductCard from "../cards/ProductCards";
+import { getProducts } from "@/actions/server/products";
 
-const Products = async () => {
-    const products = (await getProducts()) || [];
+export default async function Products() {
+    const products = await getProducts();
+
     return (
-        <div>
-            <h2 className='text-center text-4xl font-bold mb-10'>Our Products</h2>
+        <div className="flex flex-col justify-center items-center gap-5">
+            <h2 className="text-4xl font-bold text-primary">Products</h2>
 
-            <div className='grid md:grid-cols-3 gap-5'>
-                {
-                    products.map(product => (
-                        <ProductCard key={product.title} product={product}></ProductCard>
-                    ))
-                }
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+
+                {products.map((product) => (
+                    <ProductCard key={product._id} product={product} />
+                ))}
             </div>
         </div>
     );
-};
-
-export default Products;
+}
