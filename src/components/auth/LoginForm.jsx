@@ -4,9 +4,12 @@ import { useState } from "react";
 import Link from "next/link";
 import SocialButton from "./SocialButton";
 import { signIn } from "next-auth/react"
+import Swal from "sweetalert2";
+import { useRouter } from "next/navigation";
 
 
 export default function LoginForm() {
+    const router = useRouter();
     const [form, setForm] = useState({
         email: "",
         password: "",
@@ -24,6 +27,13 @@ export default function LoginForm() {
         // console.log("Login data:", form);
         // await loginUser(form);
         const result = await signIn('credentials', { email: form.email, password: form.password, redirect: false });
+        console.log(result);
+        if (!result.ok) {
+            Swal.fire("error", "Email Password not matched", "error")
+        } else {
+            Swal.fire("success", "Welcome", "success");
+            router.push("/");
+        }
     };
 
     return (
