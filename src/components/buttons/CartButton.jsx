@@ -1,13 +1,15 @@
 "use client"
 
 import { usePathname, useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 const CartButton = ({ product }) => {
-    const isLogin = false;
+    const { data: session } = useSession();
+    const isLogin = session?.status === "authenticated" || !!session?.user;
     const router = useRouter();
     const path = usePathname();
     const add2Cart = () => {
-        if (isLogin) alert('product._id');
+        if (isLogin) alert(product._id);
         else {
             router.push(`/login?callbackUrl=${path}`);
         }
