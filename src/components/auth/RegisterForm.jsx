@@ -3,10 +3,14 @@
 import { useState } from "react";
 import Link from "next/link";
 import SocialButton from "./SocialButton";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { postUser } from "@/actions/server/auth";
+import { signIn } from "next-auth/react";
 
 export default function RegisterForm() {
+
+    const searchParams = useSearchParams();
+    const callBack = searchParams.get("callbackUrl") || "/";
 
     const router = useRouter();
 
@@ -28,8 +32,13 @@ export default function RegisterForm() {
         // console.log("Register data:", form);
         const result = await postUser(form);
         if (result.acknowledged) {
-            alert('successful, please login');
-            router.push('/login');
+            // router.push('/login');
+            const result = await signIn("credentials", {
+                email: form.email,
+                password: form.password,
+                callbackUrl: callBack
+            })
+            alert('successful');
         }
     };
 
