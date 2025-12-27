@@ -5,10 +5,13 @@ import Link from "next/link";
 import SocialButton from "./SocialButton";
 import { signIn } from "next-auth/react"
 import Swal from "sweetalert2";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 
 export default function LoginForm() {
+    const searchParams = useSearchParams();
+    const callBack = searchParams.get("callbackUrl") || "/";
+
     const router = useRouter();
     const [form, setForm] = useState({
         email: "",
@@ -26,13 +29,18 @@ export default function LoginForm() {
         e.preventDefault();
         // console.log("Login data:", form);
         // await loginUser(form);
-        const result = await signIn('credentials', { email: form.email, password: form.password, redirect: false });
+        const result = await signIn('credentials', {
+            email: form.email,
+            password: form.password,
+            // redirect: false,
+            callbackUrl: searchParams.get("callbackUrl") || "/"
+        });
         console.log(result);
         if (!result.ok) {
             Swal.fire("error", "Email Password not matched", "error")
         } else {
             Swal.fire("success", "Welcome", "success");
-            router.push("/");
+
         }
     };
 
@@ -77,7 +85,7 @@ export default function LoginForm() {
                     {/* ✅ REGISTER LINK */}
                     <p className="text-center text-sm">
                         Don&apos;t have an account?{" "}
-                        <Link href="/register" className="link link-primary">
+                        <Link href={`/register?callbackUrl=${callBack}`} className="link link-primary">
                             Register
                         </Link>
                     </p>
